@@ -10,6 +10,8 @@ Express/MongoDB backend for the Deluxe Culture store-management frontend. The sa
 
 The default local MongoDB URI uses a standalone database. Invoice and stock operations use MongoDB transactions when supported and fall back to sequential updates on a standalone MongoDB server. For stronger transaction guarantees in production, use MongoDB Atlas or another replica-set deployment.
 
+If system DNS refuses a MongoDB Atlas SRV lookup, the database connector retries that lookup using Google and Cloudflare DNS.
+
 Categories and brands are not seeded; administrators can create, list, update, and delete them through the API. Product references are cleared if their brand or category is deleted. Provision the first administrator securely in MongoDB before using the admin-only API; administrator creation endpoints require an authenticated administrator.
 
 ## Vercel deployment
