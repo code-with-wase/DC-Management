@@ -20,7 +20,7 @@ Import the repository into Vercel and set `MONGO_URI`, `JWT_SECRET`, and `JWT_EX
 
 ## API routes
 
-All business routes require `Authorization: Bearer <token>` and administrator role, except `POST /auth/login` and `GET /health`.
+`GET /` returns a simple API status response. All business routes require `Authorization: Bearer <token>` and administrator role, except `POST /auth/login` and `GET /health`.
 
 | Method | Route | Purpose |
 | --- | --- | --- |
