@@ -50,7 +50,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => res.status(200).json({
-  status: 'ok',
+  status: 'ok',          
   message: 'DC Management API is running',
   health: '/health',
 }));
