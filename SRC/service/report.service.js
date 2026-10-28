@@ -22,6 +22,8 @@ export const getSalesReport = async ({ from, to, period = 'day' }) => {
   ]);
   const groups = new Map();
   const products = new Map();
+  let costOfGoodsSold = 0;
+  let untrackedCostQuantity = 0;
 
   for (const invoice of invoices) {
     const date = new Date(invoice.created_at);
@@ -36,11 +38,29 @@ export const getSalesReport = async ({ from, to, period = 'day' }) => {
     groups.set(key, group);
 
     for (const item of invoice.invoice_items) {
-      const product = products.get(item.name) || { name: item.name, quantity: 0, total: 0 };
+      const product = products.get(item.name) || {
+        name: item.name,
+        quantity: 0,
+        total: 0,
+        costOfGoodsSold: 0,
+        untrackedCostQuantity: 0,
+      };
       product.quantity += item.quantity;
       product.total += item.quantity * item.price;
+      if (Number.isFinite(item.cost_price) && item.cost_price >= 0) {
+        const itemCost = item.quantity * item.cost_price;
+        product.costOfGoodsSold += itemCost;
+        costOfGoodsSold += itemCost;
+      } else {
+        product.untrackedCostQuantity += item.quantity;
+        untrackedCostQuantity += item.quantity;
+      }
       products.set(item.name, product);
     }
+  }
+
+  for (const product of products.values()) {
+    product.grossProfit = product.untrackedCostQuantity ? null : product.total - product.costOfGoodsSold;
   }
 
   return {
@@ -48,6 +68,9 @@ export const getSalesReport = async ({ from, to, period = 'day' }) => {
     to: end.toISOString(),
     period,
     sales: invoices.reduce((total, invoice) => total + invoice.total, 0),
+    costOfGoodsSold,
+    grossProfit: untrackedCostQuantity ? null : invoices.reduce((total, invoice) => total + invoice.total, 0) - costOfGoodsSold,
+    untrackedCostQuantity,
     paidInvoices: invoices.length,
     cancelledInvoices: cancelledCount,
     revenue: Array.from(groups.values()),

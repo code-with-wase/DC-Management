@@ -84,11 +84,13 @@ export const saveInvoice = async (data, invoiceId = null) => {
       const previous = stockChanges.get(productId) || { product_id: product._id, change: 0 };
       stockChanges.set(productId, { ...previous, product_name: product.name, change });
       const original = items.find((item) => String(item.product_id) === productId);
+      const previousItem = existing?.invoice_items.find((item) => String(item.product_id) === productId);
       normalizedItems.push({
         product_id: product._id,
         name: product.name,
         quantity: requested.quantity,
         price: original.price,
+        cost_price: previousItem ? previousItem.cost_price ?? null : product.cost_price ?? null,
         brand: '',
         size: product.size,
         color: product.color,

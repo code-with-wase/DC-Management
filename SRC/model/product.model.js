@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema({
   size: { type: String, required: true, trim: true },
   color: { type: String, required: true, trim: true },
   price: { type: Number, required: true, min: 0 },
+  cost_price: { type: Number, min: 0, default: null },
   low_stock: { type: Number, required: true, min: 0, default: 5 },
   stock: { type: Number, required: true, min: 0, default: 0 },
   brand_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand', default: null },

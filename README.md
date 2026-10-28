@@ -44,6 +44,6 @@ Import the repository into Vercel and set `MONGO_URI`, `JWT_SECRET`, and `JWT_EX
 | `GET` | `/report/sales` | Sales report (`from`, `to`, `period=day|week|month`) |
 | `GET` | `/shop/data` | Combined store data |
 
-Product fields: `name`, `sku`, `size`, `color`, `price`, `low_stock`, optional `stock`, `brand_id`, and `category_id`. Invoice requests use `{ "customer": "Walk-in customer", "payment": "Cash", "items": [{ "product_id": "...", "quantity": 1, "price": 1899 }] }`.
+Product fields: `name`, `sku`, `size`, `color`, `price` (selling price), `cost_price` (purchase cost per unit; optional until known), `low_stock`, optional `stock`, `brand_id`, and `category_id`. Invoice requests use `{ "customer": "Walk-in customer", "payment": "Cash", "items": [{ "product_id": "...", "quantity": 1, "price": 1899 }] }`. Invoice items store the product's `cost_price` at sale time alongside the actual selling `price`, so later product cost changes do not rewrite sale history. Set `cost_price` when creating/updating a product to track purchase cost. Existing invoices without a saved cost remain untracked; the sales report returns `costOfGoodsSold`, `grossProfit` (null while any cost is untracked), and `untrackedCostQuantity`.
 
 Responses use `{ "data": ... }`; errors use `{ "error": { "message": "..." } }`. The frontend must replace its local-storage data adapter with HTTP requests and persist the returned bearer token.

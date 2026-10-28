@@ -5,6 +5,7 @@ const invoiceItemSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   quantity: { type: Number, required: true, min: 1 },
   price: { type: Number, required: true, min: 0 },
+  cost_price: { type: Number, min: 0, default: null },
   brand: { type: String, default: '' },
   size: { type: String, default: '' },
   color: { type: String, default: '' },
